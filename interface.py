@@ -190,7 +190,7 @@ def renderText(board,x,y,game_board):
     board.blit(text, (15, width + 15))
     return board
 
-def interface(heights, widths, game_boards, chibi = False):
+def interface(heights, widths, game_boards, chibi = False, game_solve = None):
   """
   Function that render and allow to interact with the interface
   heights, widths: sizes of the board
@@ -213,25 +213,37 @@ def interface(heights, widths, game_boards, chibi = False):
   board = initStateBoard(board,game_board)
   board = renderText(board,grid_x,grid_y,game_board)
   boxtext = TextBox((300,widths + 10,150,30),command=dumb,clear_on_enter=True,inactive_on_enter=False)
-
   running = 1
-  if not chibi:
-     path_numbers = "insert"
-  while (running == 1):
-    #Events created by the player
-    for event in pygame.event.get():
-        if event.type is QUIT:
-            running = 0
-        elif event.type is MOUSEBUTTONDOWN:
-            (mouseX, mouseY) = pygame.mouse.get_pos()
-            grid_y_aux,grid_x_aux = boardPos(mouseX, mouseY)
-            if grid_x_aux != None:
-                grid_x = grid_x_aux
-                grid_y = grid_y_aux
-                board = renderText(board,grid_x,grid_y,game_board)
-    if game_board.is_win():
-        path_numbers = "correct"
-        renderBoardAgain(board,game_board)
+  if game_solve == None: #Solve by human
+      if not chibi:
+         path_numbers = "insert"
+      while (running == 1):
+        #Events created by the player
+        for event in pygame.event.get():
+            if event.type is QUIT:
+                running = 0
+            elif event.type is MOUSEBUTTONDOWN:
+                (mouseX, mouseY) = pygame.mouse.get_pos()
+                grid_y_aux,grid_x_aux = boardPos(mouseX, mouseY)
+                if grid_x_aux != None:
+                    grid_x = grid_x_aux
+                    grid_y = grid_y_aux
+                    board = renderText(board,grid_x,grid_y,game_board)
+        if game_board.is_win():
+            path_numbers = "correct"
+            renderBoardAgain(board,game_board)
 
         boxtext.get_event(event)
-    showBoard (ttt, board,boxtext)
+        showBoard (ttt, board,boxtext)
+  else: #Solve by Machine
+      if game_solve:
+          path_numbers = "correct"
+      else:
+          path_numbers = "wrong"
+      renderBoardAgain(board,game_board)
+      while (running == 1):
+          for event in pygame.event.get():
+              if event.type is QUIT:
+                  running = 0
+          boxtext.get_event(event)
+          showBoard (ttt, board,boxtext)

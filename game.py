@@ -1,5 +1,7 @@
 import numpy as np
 import copy
+from solverIA import solver_sudoku
+
 
 class game:
     """
@@ -12,10 +14,12 @@ class game:
         self.final_state = copy.copy(final_state)
         self.name = "No name"
 
-    def convert_state_ini(self):
+    def convert_state_ini(self,dimension3 = False):
         """
         Return a nxn matrix of the initial board
         """
+        if dimension3:
+            return self.init_state.reshape((1,9,9))
         return self.init_state.reshape((9,9))
 
     def convert_state_final(self):
@@ -65,8 +69,30 @@ class game:
             return False
         return True
 
+    def are_legal(self):
+        """
+        Check if all the moves done are legal
+        """
+        m = self.convert_state_actual()
+        legal = True
+        for i in range(9):
+            for j in range(9):
+                aux = self.is_legal(i,j,m[i][j])
+                if aux:
+                    print("Move x:{0} y:{1} value:{2} is ilegal".format(i,j,m[i][j]))
+                if legal:
+                    aux = legal
+        return legal
+
     def is_win(self):
         """
         Check if the game is finish
         """
         return all(np.equal(0,self.actual_state.reshape(-1)))
+
+    def solve_IA(self):
+        """
+        Use the IA to solve the sudoku
+        """
+        IA = solver_sudoku()
+        self.actual_state = np.reshape(IA.solve(self.convert_state_ini(dimension3 = True)),-1)

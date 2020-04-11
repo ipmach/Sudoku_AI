@@ -1,11 +1,7 @@
 import string
 import pygame as pg
 
-"""
-Code use from this GIT: https://github.com/Mekire/pygame-textbox
-Author: Mekire
-Date Commit: Apr 30, 2014
-"""
+
 ACCEPTED = string.ascii_letters+string.digits+string.punctuation+" "
 
 
