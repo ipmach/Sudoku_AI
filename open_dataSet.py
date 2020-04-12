@@ -4,6 +4,9 @@ from game import game
 from interface import interface
 from elasticsearch import Elasticsearch
 from solverIA import solver_sudoku
+import time
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 """
 For now this is the main
@@ -71,6 +74,7 @@ else:
             print("You must choose  smaller or equal of {0}".format(numberSudokus))
 
     list_games = []
+    start = time.time()
     for i in range(number_games):
         print("Game {0}/{1}".format(i+1,number_games))
         res = es.get(index="sudoku", id=i)
@@ -81,3 +85,9 @@ else:
         aux = b.are_legal()
         print(" Is correct ", aux)
         list_games.append(aux)
+    end = time.time()
+    print("=============================")
+    print("Game || Result")
+    for i in range(len(list_games)):
+        print(i+1,"    || ",list_games[i])
+    print("Time: ", end - start)
